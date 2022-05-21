@@ -9,14 +9,14 @@ const customers = [];
 
 app.post("/account", (request, response) => {
     const { cpf, name } = request.body;
-
+    
     const customerAlreadyExists = customers.some(
         (customer) => customer.cpf === cpf
     );
 
     if (customerAlreadyExists) {
-        return response.status(400).json({ Error: "Customer already existes!" })
-    }
+        return response.status(400).json({ Error: "Customer already exist!" })
+    } 
 
     const id = uuidv4();
 
@@ -30,5 +30,16 @@ app.post("/account", (request, response) => {
     return response.status(201).send();
 });
 
+app.get("/statement", (request, response) => {
+    const { cpf } = request.headers;
+
+    const customer = customers.find((customer) => customer.cpf === cpf);
+
+    if(!customer) {
+        return response.status(400).json({error: "Customer not found"});
+    }
+
+    return response.json(customer.statement);
+});
 
 app.listen(3333);
